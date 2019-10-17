@@ -1,21 +1,22 @@
-/*
+/* 
 #########################################################
 #    Processor:          Arduino UNO, MEGA ou Teensy++ 2.0
-#    Language:           Wiring / C /Processing /Fritzing / Arduino IDE          
+#    Language:           Wiring / C /Processing /Fritzing / Arduino IDE
 #    Objectives:         Watering System - Irrigation Modular
 #    Author:             Andres Felipe Gomez Maya
 #    Date:               13/10/2019
 #    place:              Medellin, Colombia
 #########################################################
-  Libs: 
-	http://www.rinkydinkelectronics.com/library.php?id=5
+#    Libs: 
+#    http://www.rinkydinkelectronics.com/library.php?id=5
+#########################################################
 */
 #include <Wire.h>
 #include <DS1302.h>
 #include <SoftwareSerial.h>  // libreria que permite establecer pines digitales
 #include <SimpleDHT.h>
 
-int pinForceAT = 12;     // pin 12 para forzar modo AT de configuración
+int pinForceAT = 12;     // pin 12 para forzar modo AT de configuraci?n
 int pinTX = 11;          // pin 11 como TX
 int pinRX = 10;          // pin 10 como RX
 int pinVCC_BT = 9;       // pin 9 como alimentacion 3.3V para modulo BT
@@ -108,7 +109,7 @@ void setup(){
   RTC.writeProtect(false);
   /// RTC.setDOW(MONDAY);  // Configurar dia de la semana: MARTES.
   // RTC.setTime(23, 16, 00);  // Configurar hora en formato 24hs con min y seg: 17:00:00 HORAS.
-  // RTC.setDate(14, 10, 2019);  // Configurar fecha en formato dia/mes/año: 4/3/2014.
+  // RTC.setDate(14, 10, 2019);  // Configurar fecha en formato dia/mes/a?o: 4/3/2014.
   setStatus(2);
 }
 
