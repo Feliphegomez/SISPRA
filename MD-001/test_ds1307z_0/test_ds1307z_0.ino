@@ -24,10 +24,17 @@ void setup () {
   Serial.begin(9600); // Establece la velocidad de datos del puerto serie
   Serial.println("Iniciando el puerto I2C");
   Wire.begin();  
-  Serial.println("Abriendo Wire.");  
-  pinMode(A0, INPUT);
+  Serial.println("Abriendo Wire.");.
+
+  if (! RTC.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+
+  if (! RTC.isrunning()) {
+    Serial.println("RTC is NOT running!");
+  }
   
-  RTC.begin(); // Inicia la comunicaci¢n con el RTC
   // RTC.adjust(DateTime(__DATE__, __TIME__)); // Establece la fecha y hora (Comentar una vez establecida la hora)
 } 
 
