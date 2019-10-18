@@ -84,7 +84,7 @@ void setup () {
   pinMode(pinVCC_BT, OUTPUT);         // cuando se alimente de aqui
   pinMode(pinForceAT, OUTPUT);        // Al poner/2 en HIGH forzaremos el modo AT
   pinMode(pinVCC_BT, OUTPUT);         // cuando se alimente de aqui
-  digitalWrite(pinForceAT, HIGH);   //  Forzar AT para configuracion BT
+  // digitalWrite(pinForceAT, HIGH);   //  Forzar AT para configuracion BT
   delay(500);                         // Espera antes de encender el modulo
   digitalWrite(pinVCC_BT, HIGH);     // Enciende el modulo BT
   BT1.begin(38400);                  // comunicacion serie entre Arduino y el modulo a 38400 bps  
@@ -93,24 +93,15 @@ void setup () {
 
 void loop(){ 
   totalBackLoop = totalLoop;
-  if(RTC.read(tm)) {
-    // Serial.println("DS: OK");
-    BT1.listen();
-    while (BT1.available() > 0) {
-      Serial.println("BT1: ");
-      char inByte = BT1.read();
-      Serial.write(inByte);
-      Serial.println(); // Separador
-    }
-    if (BT1.available()){ recibeInfo(BT1.readString()); } // si hay informacion disponible desde modulo
-    if (Serial.available()){ recibeInfo(Serial.readString()); } // si hay informacion disponible desde el monitor serial
-    
-    
-    
+  BT1.listen();
+  if (BT1.available()) { recibeInfo(BT1.readString()); } // si hay informacion disponible desde modulo
+  if (Serial.available()) { recibeInfo(Serial.readString()); } // si hay informacion disponible desde el monitor serial
+  if (RTC.read(tm)) {
+    // Serial.println("DS: OK");    
     if(totalLoop >= 0){
       if(segActual == (int(tm.Minute) * 60) + int(tm.Second)){
         totalLoop = totalLoop + 1;
-      } else {
+      } else {        
         segActual = (int(tm.Minute) * 60) + int(tm.Second);
         totalLoop = 0;
         String Horas = (int(tm.Hour) >= 0 && int(tm.Hour) < 10) ? "0" + String(tm.Hour) : String(tm.Hour);
@@ -124,13 +115,12 @@ void loop(){
     }
     
     // Serial.println("Loop: " + String(totalLoop)); // Numero Total de secuencias en 1 Seg.
-    if(totalLoop == 0){
-      Serial.println("- Marca de Tiempo: " + String(fechaActual) + " " + String(horaActual) + " - Loop: " + String(totalBackLoop)); // Numero Total de secuencias en 1 Seg.
-      
-      Serial.println("segActual: " + String(segActual));
-      if(segActual >= (lastSyncTH + 2)){
-        checkerTH();
-      }
+    if (totalLoop == 0){
+      // Serial.println("- Marca de Tiempo: " + String(fechaActual) + " " + String(horaActual) + " - Loop: " + String(totalBackLoop) + " - segActual: " + String(segActual));
+    
+      mostrarDatos("*y" + fechaActual + "*");
+      mostrarDatos("*x" + horaActual + "*");
+      if(segActual >= (lastSyncTH + 2)){ checkerTH(); }
     }
   } else {
     Serial.println("Error en DS1307.");
@@ -157,10 +147,10 @@ void checkerTH(){
       } else {
         DTH_temperature = ("*T"+String(temperature)+"*");
         DTH_humidity = ("*H"+String((int)humidity)+"*");
-        Serial.println(DTH_temperature);
-        Serial.println(DTH_humidity);
-        // mostrarDatos(DTH_temperature);
-        // mostrarDatos(DTH_humidity);
+        // Serial.println(DTH_temperature);
+        // Serial.println(DTH_humidity);
+        mostrarDatos(DTH_temperature);
+        mostrarDatos(DTH_humidity);
       }
   }
 }
@@ -173,10 +163,10 @@ void recibeInfo(String infoRecibe){
         // mostrarDatos(system_status);
       } else if(infoRecibe.indexOf("power_on") >= 0){
         power_status = 1;
-        // setStatus(1);
+        setStatus(1);
       } else if(infoRecibe.indexOf("power_off") >= 0){
         power_status = 0;
-        // setStatus(2);
+        setStatus(2);
       } else if(infoRecibe.indexOf("dth_basic") >= 0){
         infoDTH();
       } else if(infoRecibe.indexOf("temperature") >= 0){
@@ -190,8 +180,17 @@ void recibeInfo(String infoRecibe){
 }
 
 void mostrarDatos(String message){
+  /*
+  // Keep reading from HC-05 and send to Arduino Serial Monitor
+  if (Serial.available())
     Serial.println(message);
+
+  // Keep reading from Arduino Serial Monitor and send to HC-05
+  if (BT1.available())
     BT1.println(message);
+    */
+  BT1.println(message);
+  Serial.println(message);
 }
 
 void infoDTH(){
