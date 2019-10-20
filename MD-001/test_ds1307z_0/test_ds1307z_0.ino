@@ -24,10 +24,10 @@ void setup () {
   Serial.begin(9600); // Establece la velocidad de datos del puerto serie
   Serial.println("Iniciando el puerto I2C");
   Wire.begin();  
-  Serial.println("Abriendo Wire.");.
+  Serial.println("Abriendo Wire.");
 
   if (! RTC.begin()) {
-    Serial.println("Couldn't find RTC");
+    Serial.println("CouldMn't find RTC");
     while (1);
   }
 
