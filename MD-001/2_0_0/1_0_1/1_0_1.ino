@@ -53,8 +53,8 @@ int lastSyncTH = -1;
 int valorHumedad;
 String FC_humidity;
 
-int minH = 50;
-int maxH = 55;
+int minH = 20;
+int maxH = 45;
 
 #define pinDTH pinDTH
 

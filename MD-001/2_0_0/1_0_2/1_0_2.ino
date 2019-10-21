@@ -28,13 +28,16 @@ int countE = 0;
 
 int valorHumedad = 1023;
 String FC_humidity = "";
+int mode = 0; // 0=manual | 1=slave
 
-#define pinH_FC A0         // PIN 5 como FC-28
+#define pinH_FC A0         // PIN como FC-28
+#define pinH_FC2 A2         // PIN como FC-28
 
 void setup() {
   pinMode(pinSYNC, OUTPUT); // PIN COMO LED SYNC
   pinMode(pinERROR, OUTPUT); // PIN LED ERROR
   pinMode(pinH_FC, INPUT);        // Al poner en INPUT activamos el FC-28
+  pinMode(pinH_FC2, INPUT);        // Al poner en INPUT activamos el FC-28
   
   Wire.begin(8); // Unimos este dispositivo al bus I2C con dirección 8
   Wire.onReceive(receiveEvent); // Registramos el evento al recibir datos
@@ -48,31 +51,48 @@ void loop() {
   if(nextSeg == Segundo){
     countE = 0;
     digitalWrite(pinERROR , LOW);
+    mode = 1;
+  } else {
+    countE = countE + 1;
+    if(countE >= 2){
+      Serial.println(" | Error de sincronizado");
+      digitalWrite(pinERROR , HIGH);
+      repeatLED(10, pinSYNC);
+    }
+    mode = 0;
+  }
+
+  Serial.print(" | pinH_FC: " + String(analogRead(pinH_FC))); 
+  Serial.print(" | pinH_FC2: " + String(analogRead(pinH_FC2)));
+
+  valorHumedad = map(analogRead(pinH_FC2), 0, 1023, 100, 0);
+  if(valorHumedad <= 3){
+    Serial.print(" | Error FC ");
+    repeatLED(10, pinERROR);
+  }
+  FC_humidity = ("*S"+String(valorHumedad)+"*");
+  
+  Serial.print(" | Actual: " + String(valorHumedad));
+  Serial.print(" | %: " + String(FC_humidity));
+  
+  if (mode == 0){
+    Serial.print(" | Modo Automatico");
+    
     String horaActual = String(Hora) + ":" + String(Minuto) + ":" + String(Segundo);
     String fechaActual = String(Anho) + "/" + String(Mes) + "/" + String(Dia);
     Serial.print(fechaActual + " " + horaActual + " - Temperatura: " + String(T) + " | Humedad: " + String(H) + " - Humedad MIN/MAX: " + String(minH) + "/" + String(maxH));
 
-    valorHumedad = map(analogRead(pinH_FC), 0, 1023, 100, 0);
-    if(valorHumedad <= 3){
-      Serial.print(" | Error FC ");
-      repeatLED(10, pinERROR);
-    }
-    FC_humidity = ("*S"+String(valorHumedad)+"*");
-    Serial.print(" | Actual: " + String(valorHumedad));
-    Serial.print(" | %: " + String(FC_humidity));
-    Serial.println();
-
+  } else if (mode == 1){
+    Serial.print(" | Modo Manual");
+  
     if(valorHumedad < minH){
-       Serial.println("Se necesita riego.");
-    }
-  } else {
-    countE = countE + 1;
-    if(countE >= 2){
-      Serial.println("Error de sincronizado");
-      digitalWrite(pinERROR , HIGH);
-      repeatLED(10, pinSYNC);
+       Serial.print("| Se necesita riego.");
     }
   }
+
+
+  Serial.println();
+  
   delay(1000);
   nextSeg = nextSeg - 1;
 }
