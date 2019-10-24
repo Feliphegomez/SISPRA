@@ -15,12 +15,18 @@
 #include <TimeLib.h>
 #include <DS1307RTC.h>
 #include "SimpleDHT.h"           // Libreria para DTH
+#include <OneWire.h>                
+#include <DallasTemperature.h>
 
+int pinDS = 7;         // RTC  - PIN 7 para RTC-DS
 int pinTX = 6;          // BT1  - PIN 6 como TX
 int pinRX = 5;          // BT1  - PIN 5 como RX
 int pinForceAT = 4;     // BT1  - PIN 4 para forzar modo AT de configuración
 int pinVCC_BT = 3;      // BT1  - PIN 3 como alimentacion 3.3V para modulo BT
 int pinDTH = 2;         // DHT  - PIN 2 para DTH
+
+OneWire ourWire(pinDS);                //Se establece el pin DS como bus OneWire
+DallasTemperature sensorTDS(&ourWire); //Se declara una variable u objeto para nuestro sensor
 
 const char *system_status_list[] =
 {
@@ -87,67 +93,62 @@ void setup () {
   delay(500);                         // Espera antes de encender el modulo
   digitalWrite(pinVCC_BT, HIGH);     // Enciende el modulo BT
   BT1.begin(38400);                  // comunicacion serie entre Arduino y el modulo a 38400 bps
-  
-  if(digitalRead(pinForceAT) == HIGH){
-    Serial.println("Modo configuracion de AT Bluetooth:");
-  }
+  sensorTDS.begin();   //Se inicia el sensor
 }
 
 void loop(){ 
-  if(digitalRead(pinForceAT) == HIGH){
-    // Keep reading from HC-05 and send to Arduino Serial Monitor
-    if (BT1.available())
-      Serial.write(BT1.read());
-  
-    // Keep reading from Arduino Serial Monitor and send to HC-05
-    if (Serial.available())
-      BT1.write(Serial.read());
-  } else {
-    totalBackLoop = totalLoop;
-    BT1.listen();
-    if (BT1.available()) { recibeInfo(BT1.readString()); } // si hay informacion disponible desde modulo
-    if (Serial.available()) { recibeInfo(Serial.readString()); } // si hay informacion disponible desde el monitor serial
-    if (RTC.read(tm)) {
-      // Serial.println("DS: OK");    
-      if(totalLoop >= 0){
-        if(segActual == (int(tm.Minute) * 60) + int(tm.Second)){
-          totalLoop = totalLoop + 1;
-        } else {        
-          segActual = (int(tm.Minute) * 60) + int(tm.Second);
-          totalLoop = 0;
-          String Horas = (int(tm.Hour) >= 0 && int(tm.Hour) < 10) ? "0" + String(tm.Hour) : String(tm.Hour);
-          String Minutos = (int(tm.Minute) >= 0 && int(tm.Minute) < 10) ? "0" + String(tm.Minute) : String(tm.Minute);
-          String Segundos = (int(tm.Second) >= 0 && int(tm.Second) < 10) ? "0" + String(tm.Second) : String(tm.Second);
-          
-          // horaActual = Horas + ':' + String(tm.Minute) + ':' + String(tm.Second);
-          horaActual = Horas + ':' + Minutos + ':' + Segundos;
-          fechaActual = String(tm.Day) + '/' + String(tm.Month) + '/' + String(tmYearToCalendar(tm.Year));
-          
-          txNodes(1, (int) tm.Year);
-          txNodes(2, tm.Month);
-          txNodes(3, tm.Day);
-          txNodes(4, tm.Hour);
-          txNodes(5, tm.Minute);
-          txNodes(6, tm.Second);
-        }
+  totalBackLoop = totalLoop;
+  BT1.listen();
+  if (BT1.available()) { recibeInfo(BT1.readString()); } // si hay informacion disponible desde modulo
+  if (Serial.available()) { recibeInfo(Serial.readString()); } // si hay informacion disponible desde el monitor serial
+  if (RTC.read(tm)) {
+    // Serial.println("DS: OK");    
+    if(totalLoop >= 0){
+      if(segActual == (int(tm.Minute) * 60) + int(tm.Second)){
+        totalLoop = totalLoop + 1;
+      } else {        
+        segActual = (int(tm.Minute) * 60) + int(tm.Second);
+        totalLoop = 0;
+        String Horas = (int(tm.Hour) >= 0 && int(tm.Hour) < 10) ? "0" + String(tm.Hour) : String(tm.Hour);
+        String Minutos = (int(tm.Minute) >= 0 && int(tm.Minute) < 10) ? "0" + String(tm.Minute) : String(tm.Minute);
+        String Segundos = (int(tm.Second) >= 0 && int(tm.Second) < 10) ? "0" + String(tm.Second) : String(tm.Second);
+        
+        // horaActual = Horas + ':' + String(tm.Minute) + ':' + String(tm.Second);
+        horaActual = Horas + ':' + Minutos + ':' + Segundos;
+        fechaActual = String(tm.Day) + '/' + String(tm.Month) + '/' + String(tmYearToCalendar(tm.Year));
+        
+        txNodes(1, (int) tm.Year);
+        txNodes(2, tm.Month);
+        txNodes(3, tm.Day);
+        txNodes(4, tm.Hour);
+        txNodes(5, tm.Minute);
+        txNodes(6, tm.Second);
+        
+        sensorTDS.requestTemperatures();   //Se envía el comando para leer la temperatura
+        float temp = sensorTDS.getTempCByIndex(0); //Se obtiene la temperatura en ºC
+        
+        Serial.print("Temperatura= ");
+        Serial.print(temp);
+        Serial.println(" C");
+
       }
-  
-      if (totalLoop == 0){    
-        mostrarDatos("*y" + fechaActual + "*");
-        mostrarDatos("*x" + horaActual + "*");
-        if(segActual >= (lastSyncTH + 2)){ checkerTH(); }
-      }
-    } else {
-      Serial.println("Error en DS1307.");
-      if (RTC.chipPresent()) {
-        Serial.println("El DS1307 se detiene. Por favor ejecute el SetTime-RV1, ");
-        Serial.println("ejemplo para inicializar el tiempo y comenzar a correr.");
-        Serial.println();
-      } else {
-        Serial.println();
-      }
-      delay(300);
     }
+
+    if (totalLoop == 0){    
+      mostrarDatos("*y" + fechaActual + "*");
+      mostrarDatos("*x" + horaActual + "*");
+      if(segActual >= (lastSyncTH + 2)){ checkerTH(); }
+    }
+  } else {
+    Serial.println("Error en DS1307.");
+    if (RTC.chipPresent()) {
+      Serial.println("El DS1307 se detiene. Por favor ejecute el SetTime-RV1, ");
+      Serial.println("ejemplo para inicializar el tiempo y comenzar a correr.");
+      Serial.println();
+    } else {
+      Serial.println();
+    }
+    delay(300);
   }
 }
 
