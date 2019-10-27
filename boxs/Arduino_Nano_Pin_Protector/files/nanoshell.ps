@@ -1,0 +1,177 @@
+%!PS
+%%BoundingBox: 0 0 595 841
+%%Creator: Heinz Spiess, Aegerten, Switzerland
+%%CreationDate: 2015/06/13 17:59:07
+
+
+% Baite Version
+%/resety 25 def  % position of reset know in mm from USB edge
+%/ledy 30 def    % position of LEDs know in mm from USB edge
+%/ledl (D13 PWR  RX  TX) def
+
+% Original Arduino
+/resety 24 def  % position of reset know in mm from USB edge
+/ledy 29 def    % position of LEDs know in mm from USB edge
+/ledl (TX  RX  PWE D13) def
+
+% "New" CH340G version with narrow leds
+%/resety 26 def  % position of reset know in mm from USB edge
+%/ledy 32 def    % position of LEDs know in mm from USB edge
+%/ledl (TX  RX  PWE D13) def
+
+/fg {1 1 1 setrgbcolor} def
+/bg {0 0.35 0.6 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+/myfont {/HelveticaNarrowBold} def
+/lp 0.3 def
+/rp 10.7 def
+/cp {lp rp add 2 div} def
+/str 20 string def
+
+0 setgray
+0.05 setlinewidth
+7.2 dup scale
+5 5 translate
+0 0 moveto
+/mm {.2834645 mul} def  % conversion of 100mil pins to mm
+/rshow { dup stringwidth pop neg 0 rmoveto show } def
+/cshow { dup stringwidth pop 2 div neg 0 rmoveto show } def
+/rect  { dup 0 exch rlineto exch dup 0 rlineto exch dup neg 0 exch rlineto closepath stroke } def
+/frect  { dup 0 exch rlineto exch dup 0 rlineto exch dup neg 0 exch rlineto closepath fill } def
+/L { moveto show } def
+/R { moveto rshow } def
+/C { moveto cshow } def
+/nanoshell {
+gsave
+currentpoint translate
+bg
+
+-0.5 -1 rmoveto 12 21 frect
+rb
+% Reset button coutout
+4.5 resety 5 add mm moveto 2 2 frect
+fg
+% LEDs cutout
+2.5 ledy 7 add mm moveto 6 3 frect
+myfont findfont 2.5 scalefont setfont
+%(Arduino) cp 5.5 C
+(NANO) cp 4.5 C
+myfont findfont 0.9 scalefont setfont
+(Reset) cp resety 1.5 add mm C
+(D1/TX) lp 15 L
+(D0/RX) lp 14 L
+(RST) lp 13 L
+(GND) lp 12 L
+(D2) lp 11 L
+(D3) lp 10 L
+(D4) lp 9 L
+(D5~) lp 8 L
+(D6~) lp 7 L
+(D7) lp 6 L
+(D8) lp 5 L
+(D9~) lp 4 L
+(D10~) lp 3 L
+(D11~/MOSI) lp 2 L
+(D12/MISO) lp 1 L
+(VIN) rp 15 R
+(GND) rp 14 R
+(RST) rp 13 R
+(5V) rp 12 R
+(A7) rp 11 R
+(A6) rp 10 R
+(SCL/A5) rp 9 R
+(SDA/A4) rp 8 R
+(A3) rp 7 R
+(A2) rp 6 R
+(A1) rp 5 R
+(A0) rp 4 R
+(VREF) rp 3 R
+(3V3) rp 2 R
+(SCK/D13) rp 1 R
+
+myfont findfont 1 scalefont setfont
+(USB) cp -0.5 C
+
+myfont findfont 0.8 scalefont setfont
+(RST) 3 19 L
+(SCK) cp 19 C
+(MISO) 8 19 R
+(GND) 3 18 L
+(MOSI) cp 18 C
+(5V) 8 18 R
+
+%/Symbol findfont 7 scalefont setfont
+%(\245) cp 14.5 C
+%/Symbol findfont 1.6 scalefont setfont
+%(+) 6.7 15.9 C
+%(-) 4.3 15.9 C
+myfont findfont 0.6 scalefont setfont
+
+% led labels
+ledl cp ledy 18.5 add mm C
+grestore
+14 0 rmoveto
+} def
+10 90 moveto
+/fg {1 1 1 setrgbcolor} def
+/bg {0 0.35 0.6 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+nanoshell
+/fg {1 1 1 setrgbcolor} def
+/bg {1 0 0 setrgbcolor} def
+/rb {1 1 0 setrgbcolor} def
+nanoshell
+/fg {0 0 0 setrgbcolor} def
+/bg {0.6 1 0 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+nanoshell
+/fg {1 1 1 setrgbcolor} def
+/bg {0 0 0 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+nanoshell 
+10 50 moveto
+/fg {1 1 1 setrgbcolor} def
+/bg {1 0 1 setrgbcolor} def
+/rb {1 1 0 setrgbcolor} def
+nanoshell
+/fg {0 0 0 setrgbcolor} def
+/bg {1 1 0 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+nanoshell
+/fg {0 0 0 setrgbcolor} def
+/bg {1 1 1 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+nanoshell
+/fg {1 1 1 setrgbcolor} def
+/bg {0.5 0 0.2 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+nanoshell 
+10 10 moveto
+/fg {1 1 1 setrgbcolor} def
+/bg {0 0 1 setrgbcolor} def
+/rb {1 1 0 setrgbcolor} def
+nanoshell
+/fg {0 0 0 setrgbcolor} def
+/bg {1 0.5 0 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+nanoshell
+/fg {1 1 1 setrgbcolor} def
+/bg {0 0.5 0 setrgbcolor} def
+/rb {1 0 0 setrgbcolor} def
+nanoshell
+/fg {1 1 1 setrgbcolor} def
+/bg {1 0 0.1 setrgbcolor} def
+/rb {1 1 0 setrgbcolor} def
+nanoshell
+
+%show positions of reset and led
+
+
+myfont findfont 4 scalefont setfont
+7 4 moveto 
+(resety=) show resety str cvs show 
+(  ledy=) show ledy str cvs show 
+(   NanoShellR) show resety str cvs show 
+(L) show ledy str cvs show 
+
+showpage
