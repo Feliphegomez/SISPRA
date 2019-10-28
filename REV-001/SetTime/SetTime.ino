@@ -35,7 +35,7 @@ void setup () {
     Serial.println("RTC is NOT running!");
   }
   
-  // RTC.adjust(DateTime(__DATE__, __TIME__)); // Establece la fecha y hora (Comentar una vez establecida la hora)
+  //RTC.adjust(DateTime(__DATE__, __TIME__)); // Establece la fecha y hora (Comentar una vez establecida la hora)
 } 
 
 

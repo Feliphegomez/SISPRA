@@ -22,6 +22,12 @@ int pinForceAT = 4;     // BT1  - PIN 4 para forzar modo AT de configuración
 int pinVCC_BT = 3;      // BT1  - PIN 3 como alimentacion 3.3V para modulo BT
 int pinDTH = 2;         // DHT  - PIN 2 para DTH
 
+int pinSYNC = 8;          // PIN 8 como LED para el estado de la sincronizacion
+int pinERROR = 9;         // PIN 9 como LED para errores
+int valorHumedad = 1023;
+String FC_humidity = "";
+#define pinH_FC A0         // PIN como FC-28
+
 const char *system_status_list[] =
 {
   "Create by FelipheGomez",
@@ -88,6 +94,8 @@ void setup () {
   digitalWrite(pinVCC_BT, HIGH);     // Enciende el modulo BT
   BT1.begin(38400);                  // comunicacion serie entre Arduino y el modulo a 38400 bps
   
+  pinMode(pinH_FC, INPUT);        // Al poner en INPUT activamos el FC-28
+  
   if(digitalRead(pinForceAT) == HIGH){
     Serial.println("Modo configuracion de AT Bluetooth:");
   }
@@ -123,19 +131,13 @@ void loop(){
           horaActual = Horas + ':' + Minutos + ':' + Segundos;
           fechaActual = String(tm.Day) + '/' + String(tm.Month) + '/' + String(tmYearToCalendar(tm.Year));
           
-          txNodes(1, (int) tm.Year);
-          txNodes(2, tm.Month);
-          txNodes(3, tm.Day);
-          txNodes(4, tm.Hour);
-          txNodes(5, tm.Minute);
-          txNodes(6, tm.Second);
         }
       }
   
-      if (totalLoop == 0){    
+      if (totalLoop == 0){
         mostrarDatos("*y" + fechaActual + "*");
         mostrarDatos("*x" + horaActual + "*");
-        if(segActual >= (lastSyncTH + 2)){ checkerTH(); }
+        if(segActual >= (lastSyncTH + 15)){ checkerTH(); }
       }
     } else {
       Serial.println("Error en DS1307.");
@@ -143,20 +145,13 @@ void loop(){
         Serial.println("El DS1307 se detiene. Por favor ejecute el SetTime-RV1, ");
         Serial.println("ejemplo para inicializar el tiempo y comenzar a correr.");
         Serial.println();
+        
       } else {
         Serial.println();
       }
       delay(300);
     }
   }
-}
-
-void txNodes(int device, int data){
-    // Serial.println("Trasmitiendo: " + String(device) + ":T:" + String(data));
-    Wire.beginTransmission(8); // Comenzamos la transmisión al dispositivo 8
-    Wire.write(device); // Dispositivo
-    Wire.write(data); // Info
-    Wire.endTransmission(); // Paramos la transmisión
 }
 
 void checkerTH(){
@@ -170,13 +165,10 @@ void checkerTH(){
       } else {
         DTH_temperature = ("*T"+String(temperature)+"*");
         DTH_humidity = ("*H"+String((int)humidity)+"*");
-        mostrarDatos(DTH_temperature);
-        txNodes(7, (int)temperature);
         
+        // mostrarDatos("*y" + fechaActual + "*:*x" + horaActual + "*:" + DTH_temperature + ":" + DTH_humidity);
+        mostrarDatos(DTH_temperature);
         mostrarDatos(DTH_humidity);
-        txNodes(8, (int)humidity);
-        txNodes(9, (int)minH);
-        txNodes(0, (int)maxH);
       }
   }
 }
