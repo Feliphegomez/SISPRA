@@ -16,17 +16,16 @@
 #include <DS1307RTC.h>
 #include "SimpleDHT.h"           // Libreria para DTH
 
+int pinLED = 13;         // LED  - PIN 13 para LED
+int pinFC = A0;         // LED  - PIN 8 para LED
 int pinTX = 6;          // BT1  - PIN 6 como TX
 int pinRX = 5;          // BT1  - PIN 5 como RX
 int pinForceAT = 4;     // BT1  - PIN 4 para forzar modo AT de configuración
 int pinVCC_BT = 3;      // BT1  - PIN 3 como alimentacion 3.3V para modulo BT
 int pinDTH = 2;         // DHT  - PIN 2 para DTH
 
-int pinSYNC = 8;          // PIN 8 como LED para el estado de la sincronizacion
-int pinERROR = 9;         // PIN 9 como LED para errores
 int valorHumedad = 1023;
 String FC_humidity = "";
-#define pinH_FC A0         // PIN como FC-28
 
 const char *system_status_list[] =
 {
@@ -56,13 +55,10 @@ byte humidity = 0;
 int err = SimpleDHTErrSuccess;
 int lastSyncTH = -1;
 
-int valorHumedad;
-String FC_humidity;
-
 int minH = 20;
 int maxH = 45;
 
-#define pinDTH pinDTH
+#define pinFC pinFC
 
 SimpleDHT22 dht22; // Crear DTH22
 SoftwareSerial BT1(pinRX, pinTX);  // Crear BT1 - pin 10 como RX, pin 11 como TX
@@ -94,7 +90,7 @@ void setup () {
   digitalWrite(pinVCC_BT, HIGH);     // Enciende el modulo BT
   BT1.begin(38400);                  // comunicacion serie entre Arduino y el modulo a 38400 bps
   
-  pinMode(pinH_FC, INPUT);        // Al poner en INPUT activamos el FC-28
+  pinMode(pinFC, INPUT);        // Al poner en INPUT activamos el FC-28
   
   if(digitalRead(pinForceAT) == HIGH){
     Serial.println("Modo configuracion de AT Bluetooth:");
@@ -137,7 +133,7 @@ void loop(){
       if (totalLoop == 0){
         mostrarDatos("*y" + fechaActual + "*");
         mostrarDatos("*x" + horaActual + "*");
-        if(segActual >= (lastSyncTH + 15)){ checkerTH(); }
+        if(segActual >= (lastSyncTH + 2)){ checkerTH(); }
       }
     } else {
       Serial.println("Error en DS1307.");
@@ -156,20 +152,31 @@ void loop(){
 
 void checkerTH(){
   if(RTC.read(tm)) {
-      if(lastSyncTH == -1){ lastSyncTH = (int(tm.Minute) * 60) + int(tm.Second); }
-      lastSyncTH = (int(tm.Minute) * 60) + int(tm.Second); // Volver a actulizar la ultima activadad del DHT
-      if ((err = dht22.read(pinDTH, &temperature, &humidity, NULL)) != SimpleDHTErrSuccess) {
-        Serial.print("No reading , err=");
-        Serial.println(err);
-        return;
+    if(lastSyncTH == -1){ lastSyncTH = (int(tm.Minute) * 60) + int(tm.Second); }
+    lastSyncTH = (int(tm.Minute) * 60) + int(tm.Second); // Volver a actulizar la ultima activadad del DHT
+    if ((err = dht22.read(pinDTH, &temperature, &humidity, NULL)) != SimpleDHTErrSuccess) {
+      Serial.print("No reading , err=");
+      Serial.println(err);
+      return;
+    } else {
+      DTH_temperature = ("*T"+String(temperature)+"*");
+      DTH_humidity = ("*H"+String((int)humidity)+"*");
+      
+      // mostrarDatos("*y" + fechaActual + "*:*x" + horaActual + "*:" + DTH_temperature + ":" + DTH_humidity);
+      mostrarDatos(DTH_temperature);
+      mostrarDatos(DTH_humidity);
+      valorHumedad = analogRead(pinFC);
+      valorHumedad = map(valorHumedad, 1023, 0, 0, 100);
+      valorHumedad = (valorHumedad >= 0) ? valorHumedad : -1;
+      if(valorHumedad >= 0){
+        Serial.print("Mositure : ");
+        Serial.print(valorHumedad);
+        Serial.println("%");
       } else {
-        DTH_temperature = ("*T"+String(temperature)+"*");
-        DTH_humidity = ("*H"+String((int)humidity)+"*");
-        
-        // mostrarDatos("*y" + fechaActual + "*:*x" + horaActual + "*:" + DTH_temperature + ":" + DTH_humidity);
-        mostrarDatos(DTH_temperature);
-        mostrarDatos(DTH_humidity);
+        Serial.println("Error FC");
       }
+      delay(1000);
+    }
   }
 }
 
