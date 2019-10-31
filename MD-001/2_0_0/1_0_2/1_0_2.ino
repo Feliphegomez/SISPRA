@@ -47,6 +47,8 @@ void setup() {
 }
  
 void loop() {
+  valorHumedad = map(analogRead(pinH_FC2), 0, 1023, 100, 0);
+  Serial.print(" | REFS: " + String(valorHumedad));
   digitalWrite(pinSYNC , HIGH);
   if(nextSeg == Segundo){
     countE = 0;
