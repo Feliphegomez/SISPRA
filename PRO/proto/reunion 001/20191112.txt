@@ -1,0 +1,22 @@
+Despues de reunion con gerencia se modifican los parametros del proyecto.
+
+Nuevo diseño de modulo.
+
+10x10
+20x20
+
+Nota: Ambos modulos deben estar adaptados al mismo sistema de ensamble "Ciego".
+
+** Tanque de Agua
+
+- Contenedor de agua. (Dentro del diseño del tanque)
+- Electrovalvula. (3/4 de medida / 12vc)
+- Sensor de agua.
+
+** Modulos
+
+- Sensor de Humedad de suelo
+- Paso de Agua desde el tanque o desde toma principal.
+- individual.
+
+Nota: Se intentará que todo sea indivual.
