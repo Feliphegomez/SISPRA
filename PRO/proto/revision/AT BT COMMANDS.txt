@@ -1,0 +1,23 @@
+Lista de comandos AT BT:
+
+AT COMMAND LISTING
+---------------------------
+COMMAND			| FUNCTION
+---------------------------
+AT				Test UART Connection
+AT+RESET		Reset Device
+AT+VERSION		Query firmware version
+AT+ORGL			Restore settings to Factory Defaults
+AT+ADDR			Query Device Bluetooth Address
+AT+NAME			Query/Set Device Name
+AT+RNAME		Query Remote Bluetooth Device’s
+AT+ROLE			Query/Set Device Role
+AT+CLASS		Query/Set Class of Device CoD
+AT+IAC			Query/Set Inquire Access Code
+AT+INQM			Query/Set Inquire Access Mode
+AT+PSWDAT+PIN	Query/Set Pairing Passkey
+AT+UART			Query/Set UART parameter
+AT+CMODE		Query/Set Connection Mode
+AT+BIND			Query/Set Binding Bluetooth Address
+AT+POLAR		Query/Set LED Output Polarity
+AT+PIO			Set/Reset a User I/O pin
