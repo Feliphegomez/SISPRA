@@ -2,15 +2,14 @@
 #include <Wire.h>
 #include <SimpleDHT.h>
 
-int pinFC = A0;         // LED  - PIN 8 para LED
-int pinTX = 6;          // BT1  - PIN 6 como TX
-int pinRX = 5;          // BT1  - PIN 5 como RX
-int pinForceAT = 4;     // BT1  - PIN 4 para forzar modo AT de configuración
-int pinVCC_BT = 3;      // BT1  - PIN 3 como alimentacion 3.3V para modulo BT
-int pinDTH = 2;         // DHT  - PIN 2 para DTH
-int pinWaterSensor = A1;         // DHT  - PIN 2 para DTH
-
-// DHT22 -- VCC: 5V or 3V // GND // DATA: 2
+int pinFC = A0;             // LED  - PIN 8 para LED
+int pinTX = 6;              // BT1  - PIN 6 como TX
+int pinRX = 5;              // BT1  - PIN 5 como RX
+int pinForceAT = 4;         // BT1  - PIN 4 para forzar modo AT de configuración
+int pinVCC_BT = 3;          // BT1  - PIN 3 como alimentacion 3.3V para modulo BT
+int pinDTH = 2;             // DHT  - PIN 2 para DTH
+int pinMoisture = A0;       // DHT  - PIN 2 para DTH
+int pinWaterSensor = A1;    // DHT  - PIN 2 para DTH
 int pinDHT22 = pinDTH;
 
 SimpleDHT22 dht22(pinDHT22);
@@ -83,5 +82,13 @@ void loop() {
       
       int sensorWater =analogRead(pinWaterSensor);
       BT1.println("*W"+String(sensorWater)+"*");
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(1000);
+      
+      int sensorMoisture =analogRead(pinMoisture);
+      sensorMoisture = map(sensorMoisture,550,0,0,100);
+      BT1.println("*M"+String(sensorMoisture)+"*");
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(1000);
   }
 }
