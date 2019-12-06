@@ -1,0 +1,73 @@
+LABCENTER PROTEUS TOOL INFORMATION FILE
+=======================================
+
+In case of difficulty, please e-mail support@labcenter.co.uk
+
+Tool set up for Proteus layout 'modulo bootloader.pdsprj'.
+CADCAM generated at 07:52:55 p.m. on lunes, 20 de mayo de 2019.
+
+File List
+---------
+Top Copper              : modulo bootloader - CADCAM Top Copper.GBR
+Bottom Copper           : modulo bootloader - CADCAM Bottom Copper.GBR
+Top Silk Screen         : modulo bootloader - CADCAM Top Silk Screen.GBR
+Bottom Silk Screen      : modulo bootloader - CADCAM Bottom Silk Screen.GBR
+Top Solder Resist       : modulo bootloader - CADCAM Top Solder Resist.GBR
+Bottom Solder Resist    : modulo bootloader - CADCAM Bottom Solder Resist.GBR
+Top SMT Paste           : modulo bootloader - CADCAM Top SMT Paste.GBR
+Mechanical 1            : modulo bootloader - CADCAM Mechanical 1.GBR
+Top Assembly            : modulo bootloader - CADCAM Top Assembly.GBR
+Bottom Assembly         : modulo bootloader - CADCAM Bottom Assembly.GBR
+Drill                   : modulo bootloader - CADCAM Drill.DRL
+Netlist                 : modulo bootloader - CADCAM Netlist.IPC
+
+Photoplotter Setup
+------------------
+Format: RS274X, ASCII, 4.3, metric, absolute, eob=*, LZO
+Notes:  D=Diameter, S=Side, W=Width, H=Height, C=Chamfer, I=Index
+
+D10	CIRCLE  D=0.635mm                                                         DRAW 
+D11	CIRCLE  D=0.3048mm                                                        DRAW 
+D12	CIRCLE  D=0.254mm                                                         DRAW 
+D13	CIRCLE  D=0.762mm                                                         FLASH
+D14	SQUARE  S=1.27mm                                                          FLASH
+D15	CIRCLE  D=1.27mm                                                          FLASH
+D16	CIRCLE  D=1.524mm                                                         FLASH
+D17	RECT    W=1.0414mm            H=1.80339mm                                 FLASH
+D18	RECT    W=1.09219mm           H=1.7526mm                                  FLASH
+D19	CIRCLE  D=2.032mm                                                         FLASH
+D70	CIRCLE  D=1.778mm                                                         FLASH
+D71	RECT    W=1.80339mm           H=1.0414mm                                  FLASH
+D20	CIRCLE  D=0.2032mm                                                        DRAW 
+D21	CIRCLE  D=0.0635mm                                                        DRAW 
+D22	CIRCLE  D=0.2mm                                                           DRAW 
+D23	CIRCLE  D=0.25mm                                                          DRAW 
+D24	CIRCLE  D=1.016mm                                                         FLASH
+D25	PPAD    W=1.524mm             H=1.524mm             I=0                   FLASH
+D26	PPAD    W=1.524mm             H=1.524mm             I=1                   FLASH
+D27	PPAD    W=1.0414mm            H=1.80339mm           I=2                   FLASH
+D28	PPAD    W=1.09219mm           H=1.7526mm            I=3                   FLASH
+D29	CIRCLE  D=2.286mm                                                         FLASH
+D72	PPAD    W=1.80339mm           H=1.0414mm            I=4                   FLASH
+D73	CIRCLE  D=0.05mm                                                          DRAW 
+D30	CIRCLE  D=0.127mm                                                         DRAW 
+
+NC Drill Setup
+--------------
+Format: Excellon, ASCII, 4.3, metric, absolute, eob=<CR><LF>, no zero suppression.
+Notes:  Tool sizes are diameters. Layer sets are in brackets - 0=TOP, 15=BOTTOM, 1-14=INNER.
+
+T01	0.381mm (0-15) Plated
+T02	0.762mm (0-15) Plated
+T03	1.016mm (0-15) Plated
+
+Layer Stackup
+-------------
+Top Solder Resist        : 0.01mm     Resist
+Top Copper               : 0.018mm    Copper
+Core                     : 1.55mm     FR4
+Bottom Copper            : 0.018mm    Copper
+Bottom Solder Resist     : 0.01mm     Resist
+
+
+[END OF FILE]
